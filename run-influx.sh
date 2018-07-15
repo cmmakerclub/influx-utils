@@ -50,6 +50,7 @@ EOF
   if confirm ;then
     mkdir -p $DATA_PATH
     echo "data/" > "$ROOT_DIR/.gitignore" 
+    echo "meta/" >> "$ROOT_DIR/.gitignore" 
     docker run --rm influxdb influxd config > $INFLUX_CONF
     sed -Ei "s/auth-enabled = false/auth-enabled = true/g" $INFLUX_CONF
     docker run \
