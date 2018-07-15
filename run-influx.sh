@@ -49,7 +49,7 @@ EOF
   
   if confirm ;then
     mkdir -p $DATA_PATH
-    echo "data" > "$ROOT_DIR/.gitignore" 
+    echo "data/" > "$ROOT_DIR/.gitignore" 
     docker run --rm influxdb influxd config > $INFLUX_CONF
     sed -Ei "s/auth-enabled = false/auth-enabled = true/g" $INFLUX_CONF
     docker run \
@@ -62,6 +62,15 @@ EOF
           -d \
           --name "${CONTAINER_NAME}" \
           influxdb -config /etc/influxdb/influxdb.conf
+          sudo apt-get install -y influxdb-client
+
+          INFLUX_ADMIN_USER=admin
+          INFLUX_ADMIN_PASSWORD=admin
+          read -r -p "Enter INFLUX_ADMIN_USER (admin): " INFLUX_ADMIN_USER
+          read -r -p "Enter INFLUX_ADMIN_PASSWORD: " INFLUX_ADMIN_PASSWORD
+          INFLUX_ADMIN_USER="${INFLUX_ADMIN_USER:-admin}"
+
+          #influx -execute "CREATE USER \"${INFLUX_ADMIN_USER}\" WITH PASSWORD '${INFLUX_ADMIN_PASSWORD}' WITH ALL PRIVILEGES" 
   fi
 }
 
