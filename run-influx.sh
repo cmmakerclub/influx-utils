@@ -26,10 +26,13 @@ setup() {
 $0 v$VERSION
 EOF
   if [ -z "$CONTAINER_NAME" ]; then
-    read -r -p "Enter CONTAINER_NAME (influxdb): " CONTAINER_NAME
-     if [ -z "$CONTAINER_NAME" ]; then
-        CONTAINER_NAME=influxdb
-     fi
+    while True; do
+       read -r -p "Enter CONTAINER_NAME (influxdb): " CONTAINER_NAME
+       if [ -z "$CONTAINER_NAME" ]; then
+          CONTAINER_NAME=influxdb
+       fi
+       docker inspect "${CONTAINER_NAME}" &> /dev/null
+    done;
   fi
   
   ROOT_DIR="${ROOT_DIR:-$HOME/tick/influxdb}"
