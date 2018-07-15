@@ -60,7 +60,7 @@ EOF
           -p $INFLUX_PORT:8086 \
           -p $INFLUXDB_BIND_ADDRESS:8088 \
           -d \
-          --name "${NAME}" \
+          --name "${CONTAINER_NAME}" \
           influxdb -config /etc/influxdb/influxdb.conf
   fi
 }
