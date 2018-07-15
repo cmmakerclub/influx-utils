@@ -49,7 +49,9 @@ EOF
   
   if confirm ;then
     mkdir -p $DATA_PATH
-    echo "data" > "$ROOT_DIR/.gitignore"
+    echo "data" > "$ROOT_DIR/.gitignore" 
+    docker run --rm influxdb influxd config > $INFLUX_CONF
+    sed -Ei "s/auth-enabled = false/auth-enabled = true/g" $INFLUX_CONF
     docker run \
           -v $DATA_PATH:/var/lib/influxdb \
           -v $INFLUX_CONF:/etc/influxdb/influxdb.conf:ro \
@@ -62,9 +64,6 @@ EOF
           influxdb -config /etc/influxdb/influxdb.conf
   fi
 }
-
-#docker run --rm influxdb influxd config > influxdb.conf
-#sed -Ei "s/auth-enabled = false/auth-enabled = true/g" influxdb.conf
 
 case "$1" in
         --setup|setup) setup;;
