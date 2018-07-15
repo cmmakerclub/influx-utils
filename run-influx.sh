@@ -9,12 +9,7 @@ confirm() {
             false
             ;;
     esac
-}
-
-if [ -z "$DATA_PATH" ]; then
-  DATA_PATH=$HOME/influxdb/influxdb_data
-fi
-
+} 
 
 if [ -z "$CONTAINER_NAME" ]; then
   read -r -p "Enter CONTAINER_NAME (influxdb): " CONTAINER_NAME
@@ -23,11 +18,16 @@ if [ -z "$CONTAINER_NAME" ]; then
    fi
 fi
 
+DATA_PATH="${DATA_PATH:-$HOME/influxdb/influxdb_data}"
+INFLUX_PORT="${INFLUX_PORT:-8086}"
+INFLUX_CONF="${INFLUX_CONF:-$PWD/influxdb.conf}"
+DOCKER_NETWORK="${DOCKER_NETWORK:-host}"
+
 echo "DATA_PATH=$DATA_PATH"
 echo "CONTAINER_NAME=$CONTAINER_NAME"
-echo "PORT=$INFLUX_PORT"
+echo "INFLUX_PORT=$INFLUX_PORT" 
 echo "INFLUX_CONF=$INFLUX_CONF"
-INFLUX_CONFIG=$PWD/influxdb.conf
+echo "DOCKER_NETWORK=$DOCKER_NETWORK"
 
 if confirm ;then
   mkdir -p $DATA_PATH
@@ -35,10 +35,9 @@ if confirm ;then
         -v $HOME/influxdb/influxdb_data:/var/lib/influxdb \
         -v $PWD/influxdb.conf:/etc/influxdb/influxdb.conf:ro \
         --restart always \
-        --net host\
+        --net ${DOCKER_NETWORK}\
         -p $INFLUX_PORT:8086 \
         -d \
         --name "${NAME}" \
         influxdb -config /etc/influxdb/influxdb.conf
 fi
-
