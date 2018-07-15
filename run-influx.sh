@@ -2,8 +2,8 @@
 VERSION=1.0.0
 usage() {
         cat <<EOF
-influxdb.sh v$VERSION
-Usage: $0 [start|--help]
+$0 v$VERSION
+Usage: $0 [setup|--help]
 EOF
         exit 1
 }
@@ -21,7 +21,10 @@ confirm() {
     esac
 } 
 
-start() {
+setup() {
+        cat <<EOF
+$0 v$VERSION
+EOF
   if [ -z "$CONTAINER_NAME" ]; then
     read -r -p "Enter CONTAINER_NAME (influxdb): " CONTAINER_NAME
      if [ -z "$CONTAINER_NAME" ]; then
@@ -29,24 +32,27 @@ start() {
      fi
   fi
   
-  DATA_PATH="${DATA_PATH:-$HOME/influxdb/influxdb_data}"
+  ROOT_DIR="${ROOT_DIR:-$HOME/tick/influxdb}"
+  DATA_PATH="${DATA_PATH:-${ROOT_DIR}/data}"
   INFLUX_PORT="${INFLUX_PORT:-8086}"
   INFLUXDB_BIND_ADDRESS="${INFLUXDB_BIND_ADDRESS:-8088}"
-  INFLUX_CONF="${INFLUX_CONF:-$PWD/influxdb.conf}"
+  INFLUX_CONF="${INFLUX_CONF:-$ROOT_DIR/influxdb.conf}"
   DOCKER_NETWORK="${DOCKER_NETWORK:-host}"
   
-  echo "DATA_PATH=$DATA_PATH"
   echo "CONTAINER_NAME=$CONTAINER_NAME"
+  echo "ROOT_DIR=$ROOT_DIR"
+  echo "DATA_PATH=$DATA_PATH"
+  echo "INFLUX_CONF=$INFLUX_CONF"
   echo "INFLUX_PORT=$INFLUX_PORT" 
   echo "INFLUXDB_BIND_ADDRESS=$INFLUXDB_BIND_ADDRESS" 
-  echo "INFLUX_CONF=$INFLUX_CONF"
   echo "DOCKER_NETWORK=$DOCKER_NETWORK"
   
   if confirm ;then
     mkdir -p $DATA_PATH
+    echo "data" > "$ROOT_DIR/.gitignore"
     docker run \
-          -v $HOME/influxdb/influxdb_data:/var/lib/influxdb \
-          -v $PWD/influxdb.conf:/etc/influxdb/influxdb.conf:ro \
+          -v $DATA_PATH:/var/lib/influxdb \
+          -v $INFLUX_CONF:/etc/influxdb/influxdb.conf:ro \
           --restart always \
           --net ${DOCKER_NETWORK}\
           -p $INFLUX_PORT:8086 \
@@ -61,7 +67,7 @@ start() {
 #sed -Ei "s/auth-enabled = false/auth-enabled = true/g" influxdb.conf
 
 case "$1" in
-        --start|start) start;;
+        --setup|setup) setup;;
         --help|help) usage;;
         *) usage;;
 esac
