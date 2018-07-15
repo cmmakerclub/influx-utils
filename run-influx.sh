@@ -62,15 +62,23 @@ EOF
           -d \
           --name "${CONTAINER_NAME}" \
           influxdb -config /etc/influxdb/influxdb.conf
-          sudo apt-get install -y influxdb-client
+          hash influx &> /dev/null
+          if [ $? -eq 1 ]; then
+              sudo apt-get install -y influxdb-client
+          fi
 
           INFLUX_ADMIN_USER=admin
-          INFLUX_ADMIN_PASSWORD=admin
           read -r -p "Enter INFLUX_ADMIN_USER (admin): " INFLUX_ADMIN_USER
-          read -r -p "Enter INFLUX_ADMIN_PASSWORD: " INFLUX_ADMIN_PASSWORD
           INFLUX_ADMIN_USER="${INFLUX_ADMIN_USER:-admin}"
 
-          #influx -execute "CREATE USER \"${INFLUX_ADMIN_USER}\" WITH PASSWORD '${INFLUX_ADMIN_PASSWORD}' WITH ALL PRIVILEGES" 
+          unset INFLUX_ADMIN_PASSWORD
+          while [ -z ${INFLUX_ADMIN_PASSWORD} ]; do
+               read -r -p "Enter INFLUX_ADMIN_PASSWORD: " INFLUX_ADMIN_PASSWORD
+          done
+
+          echo "INFLUX_ADMIN_USER=$INFLUX_ADMIN_USER" 
+          echo "INFLUX_ADMIN_PASSWORD=$INFLUX_ADMIN_PASSWORD" 
+          influx -execute "CREATE USER \"${INFLUX_ADMIN_USER}\" WITH PASSWORD '${INFLUX_ADMIN_PASSWORD}' WITH ALL PRIVILEGES" 
   fi
 }
 
