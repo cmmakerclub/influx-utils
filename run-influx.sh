@@ -1,6 +1,9 @@
 #!/bin/bash
 
 VERSION=1.0.0
+DEFAULT_INFLUX_ADMIN_USER=admin
+DEFAULT_INFLUX_TELEGRAF_USER=telegraf
+
 usage() {
         cat <<EOF
 $0 v$VERSION
@@ -77,8 +80,8 @@ EOF
               sudo apt-get install -y influxdb-client
           fi
 
-          INFLUX_ADMIN_USER=admin
-          INFLUX_TELEGRAF_USER=telegraf
+          INFLUX_ADMIN_USER=DEFAULT_INFLUX_ADMIN_USER
+          INFLUX_TELEGRAF_USER=DEFAULT_INFLUX_TELEGRAF_USER
 
           read -r -p "Enter INFLUX_ADMIN_USER (admin): " INFLUX_ADMIN_USER
           INFLUX_ADMIN_USER="${INFLUX_ADMIN_USER:-admin}"
