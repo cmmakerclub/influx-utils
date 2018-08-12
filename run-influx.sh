@@ -80,8 +80,8 @@ EOF
               sudo apt-get install -y influxdb-client
           fi
 
-          INFLUX_ADMIN_USER=DEFAULT_INFLUX_ADMIN_USER
-          INFLUX_TELEGRAF_USER=DEFAULT_INFLUX_TELEGRAF_USER
+          INFLUX_ADMIN_USER=$DEFAULT_INFLUX_ADMIN_USER
+          INFLUX_TELEGRAF_USER=$DEFAULT_INFLUX_TELEGRAF_USER
 
           read -r -p "Enter INFLUX_ADMIN_USER (admin): " INFLUX_ADMIN_USER
           INFLUX_ADMIN_USER="${INFLUX_ADMIN_USER:-admin}"
