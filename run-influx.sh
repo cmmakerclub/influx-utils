@@ -25,6 +25,21 @@ confirm() {
     esac
 }
 
+
+create() {
+    unset INFLUX_ACCOUNT
+    while [ -z ${INFLUX_ACCOUNT} ]; do
+         read -r -p "Enter INFLUX_ACCOUNT : " INFLUX_ACCOUNT
+    done
+    DB="${INFLUX_ACCOUNT}db"
+    CREATE_USER="CREATE USER \"${INFLUX_ACCOUNT}\" WITH PASSWORD '${INFLUX_ACCOUNT}'"
+    CREATE_DB="CREATE DATABASE \"${DB}\""
+    GRANT_DB="GRANT READ ON \"${DB}\" TO \"${INFLUX_ACCOUNT}\""
+    echo $CREATE_USER
+    echo $CREATE_DB
+    echo $GRANT_DB
+}
+
 setup() {
         cat <<EOF
 $0 v$VERSION
@@ -100,6 +115,7 @@ EOF
 
 case "$1" in
         --setup|setup) setup;;
+        --create|create) create;;
         --help|help) usage;;
         *) usage;;
 esac
