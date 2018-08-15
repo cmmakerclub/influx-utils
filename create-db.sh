@@ -19,13 +19,9 @@ while true; do
       break;
     fi
 
-    #declare -r INFLUX_ADMIN_USER="${INFLUX_ADMIN_USER:-""}"
-    #declare -r INFLUX_ADMIN_PASSWO="${INFLUX_ADMIN_USER:-""}"
     influx -execute "SHOW DATABASES" -username "${INFLUX_ADMIN_USER}" -password "${INFLUX_ADMIN_PASSWORD}"
-    # -execute "CREATE USER \"${INFLUX_ADMIN_USER}\" WITH PASSWORD '${INFLUX_ADMIN_PASSWORD}' WITH ALL PRIVILEGES"
+
     if [ $? -eq 0 ]; then
         break
     fi
 done
-#influx -execute "${CREATE_USER}" -username 'nat' -password ''
-# ${CREATE_DB}; ${GRANT_DB}" -username 'nat' -password ''
