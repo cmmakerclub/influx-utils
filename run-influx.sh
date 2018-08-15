@@ -7,7 +7,7 @@ DEFAULT_INFLUX_TELEGRAF_USER=telegraf
 usage() {
         cat <<EOF
 $0 v$VERSION
-Usage: $0 [setup|--help]
+Usage: $0 [setup|create|--help]
 EOF
         exit 1
 }
