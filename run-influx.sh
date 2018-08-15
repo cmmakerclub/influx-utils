@@ -26,20 +26,6 @@ confirm() {
 }
 
 
-create() {
-    unset INFLUX_ACCOUNT
-    while [ -z ${INFLUX_ACCOUNT} ]; do
-         read -r -p "Enter INFLUX_ACCOUNT : " INFLUX_ACCOUNT
-    done
-    DB="${INFLUX_ACCOUNT}db"
-    CREATE_USER="CREATE USER \"${INFLUX_ACCOUNT}\" WITH PASSWORD '${INFLUX_ACCOUNT}'"
-    CREATE_DB="CREATE DATABASE \"${DB}\""
-    GRANT_DB="GRANT READ ON \"${DB}\" TO \"${INFLUX_ACCOUNT}\""
-    echo $CREATE_USER
-    echo $CREATE_DB
-    echo $GRANT_DB
-}
-
 setup() {
         cat <<EOF
 $0 v$VERSION
@@ -60,8 +46,7 @@ EOF
   INFLUX_CONF="${INFLUX_CONF:-$ROOT_DIR/influxdb.conf}"
   DOCKER_NETWORK="${DOCKER_NETWORK:-host}"
 
-  echo "CONTAINER_NAME=$CONTAINER_NAME"
-  echo "ROOT_DIR=$ROOT_DIR"
+  echo "CONTAINER_NAME=$CONTAINER_NAME" echo "ROOT_DIR=$ROOT_DIR"
   echo "DATA_PATH=$DATA_PATH"
   echo "INFLUX_CONF=$INFLUX_CONF"
   echo "INFLUX_PORT=$INFLUX_PORT"
@@ -111,6 +96,20 @@ EOF
 
           influx -execute "CREATE USER \"${INFLUX_ADMIN_USER}\" WITH PASSWORD '${INFLUX_ADMIN_PASSWORD}' WITH ALL PRIVILEGES"
   fi
+}
+
+create() {
+    unset INFLUX_ACCOUNT
+    while [ -z ${INFLUX_ACCOUNT} ]; do
+         read -r -p "Enter INFLUX_ACCOUNT : " INFLUX_ACCOUNT
+    done
+    DB="${INFLUX_ACCOUNT}db"
+    CREATE_USER="CREATE USER \"${INFLUX_ACCOUNT}\" WITH PASSWORD '${INFLUX_ACCOUNT}'"
+    CREATE_DB="CREATE DATABASE \"${DB}\""
+    GRANT_DB="GRANT READ ON \"${DB}\" TO \"${INFLUX_ACCOUNT}\""
+    echo $CREATE_USER
+    echo $CREATE_DB
+    echo $GRANT_DB
 }
 
 case "$1" in
