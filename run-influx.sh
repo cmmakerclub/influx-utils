@@ -7,7 +7,7 @@ DEFAULT_INFLUX_TELEGRAF_USER=telegraf
 usage() {
         cat <<EOF
 $0 v$VERSION
-Usage: $0 [setup|createdb|--help]
+Usage: $0 [setup|createdb|run-grafana--help]
 EOF
         exit 1
 }
@@ -131,9 +131,17 @@ createdb() {
     done
 }
 
+run_grafana() {
+  DMIN_PASSWORD="secret"
+  NAME="grafana"
+  docker volume create grafana-storage 
+  docker run -d -p 3001:3000 -e "GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD}" --name="${NAME}" -v grafana-storage:/var/lib/grafana  grafana/grafana
+}
+
 case "$1" in
         --setup|setup) setup;;
         --createdb|createdb) createdb;;
+        --run-grafana|run-grafana) run_grafana;;
         --help|help) usage;;
         *) usage;;
 esac
