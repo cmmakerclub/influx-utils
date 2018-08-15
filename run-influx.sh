@@ -7,7 +7,7 @@ DEFAULT_INFLUX_TELEGRAF_USER=telegraf
 usage() {
         cat <<EOF
 $0 v$VERSION
-Usage: $0 [setup|createdb|run-grafana--help]
+Usage: $0 [setup|create-db|run-grafana|create-user|--help]
 EOF
         exit 1
 }
@@ -95,7 +95,25 @@ EOF
           echo "INFLUX_ADMIN_PASSWORD=$INFLUX_ADMIN_PASSWORD" 
 
           influx -execute "CREATE USER \"${INFLUX_ADMIN_USER}\" WITH PASSWORD '${INFLUX_ADMIN_PASSWORD}' WITH ALL PRIVILEGES"
+          if [ $? -eq 0 ]; then
+            echo "done create admin user"
+          fi
   fi
+}
+
+create_user() {
+#          unset INFLUX_ADMIN_USER
+          while [ -z ${INFLUX_ADMIN_USER} ]; do
+                 read -r -p "Enter admin user: " INFLUX_ADMIN_USER
+          done
+          while [ -z ${INFLUX_ADMIN_PASSWORD} ]; do
+                 read -r -p "Enter admin password: " INFLUX_ADMIN_PASSWORD
+          done
+#          influx -username "${INFLUX_ADMIN_USER}" -password '' --execute "CREATE USER \"${INFLUX_ADMIN_USER}\" WITH PASSWORD '${INFLUX_ADMIN_PASSWORD}' WITH ALL PRIVILEGES"
+          echo "CREATE USER \"${INFLUX_ADMIN_USER}\" WITH PASSWORD '${INFLUX_ADMIN_PASSWORD}' WITH ALL PRIVILEGES"
+          if [ $? -eq 0 ]; then
+            echo "done create admin user"
+          fi
 }
 
 createdb() {
@@ -140,7 +158,8 @@ run_grafana() {
 
 case "$1" in
         --setup|setup) setup;;
-        --createdb|createdb) createdb;;
+        --create-db|create-db) createdb;;
+        --create-user|create-user) create_user;;
         --run-grafana|run-grafana) run_grafana;;
         --help|help) usage;;
         *) usage;;
