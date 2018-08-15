@@ -119,6 +119,8 @@ create_user() {
 createdb() {
     INFLUX_ADMIN_USER=admin
     INFLUX_ADMIN_PASSWORD=admin
+#    CREATE RETENTION POLICY <retention_policy_name> ON <database_name> DURATION <duration> REPLICATION <n> [SHARD DURATION <duration>] [DEFAULT]
+#    CREATE RETENTION POLICY "one_day_only" ON "NOAA_water_database" DURATION 1d REPLICATION 1
 
     echo "enter 'q' to 'exit'"
     while true; do
@@ -140,6 +142,7 @@ createdb() {
             done
             DB="${INFLUX_ACCOUNT}db"
             CREATE_USER="CREATE USER \"${INFLUX_ACCOUNT}\" WITH PASSWORD '${INFLUX_ACCOUNT}'"
+            # CREATE DATABASE foo WITH DURATION 45d NAME autogen
             CREATE_DB="CREATE DATABASE \"${DB}\""
             GRANT_DB="GRANT READ ON \"${DB}\" TO \"${INFLUX_ACCOUNT}\""
             influx -execute "${CREATE_USER}; ${CREATE_DB}; ${GRANT_DB}" -username "${INFLUX_ADMIN_USER}" -password "${INFLUX_ADMIN_PASSWORD}"
@@ -153,7 +156,7 @@ run_grafana() {
   ADMIN_PASSWORD="secret"
   NAME="grafana"
   docker volume create grafana-storage 
-  docker run -d -p 3001:3000 -e "GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD}" --name="${NAME}" -v grafana-storage:/var/lib/grafana  grafana/grafana
+  docker run --net=host -d -p 3001:3000 -e "GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD}" --name="${NAME}" -v grafana-storage:/var/lib/grafana  grafana/grafana
 }
 
 case "$1" in
