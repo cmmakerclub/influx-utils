@@ -101,7 +101,7 @@ EOF
 create() {
     unset INFLUX_ACCOUNT
     while [ -z ${INFLUX_ACCOUNT} ]; do
-         read -r -p "Enter INFLUX_ACCOUNT : " INFLUX_ACCOUNT
+         read -r -p "Enter INFLUX_ACCOUNT DB NAME : " INFLUX_ACCOUNT
     done
     DB="${INFLUX_ACCOUNT}db"
     CREATE_USER="CREATE USER \"${INFLUX_ACCOUNT}\" WITH PASSWORD '${INFLUX_ACCOUNT}'"
