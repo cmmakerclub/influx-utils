@@ -1,7 +1,7 @@
-DB="${USER}db" 
+DB="${USER}db"
 CREATE_USER="CREATE USER \"${USER}\" WITH PASSWORD '${USER}'"
 CREATE_DB="CREATE DATABASE \"${DB}\""
-GRANT_DB="GRANT WRITE ON \"${DB}\" TO \"${USER}\"" 
+GRANT_DB="GRANT WRITE ON \"${DB}\" TO \"${USER}\""
 echo $CREATE_USER
 
 INFLUX_ADMIN_USER=admin
@@ -12,16 +12,16 @@ while true; do
     read -r -p "Enter INFLUX_ADMIN_USER: " INFLUX_ADMIN_USER
     if [[ $INFLUX_ADMIN_USER = 'q' ]]; then
       break;
-    fi 
+    fi
 
     read -r -p "Enter INFLUX_ADMIN_PASSWORD: " INFLUX_ADMIN_PASSWORD
     if [[ $INFLUX_ADMIN_PASSWORD = 'q' ]]; then
       break;
-    fi 
+    fi
 
     #declare -r INFLUX_ADMIN_USER="${INFLUX_ADMIN_USER:-""}"
     #declare -r INFLUX_ADMIN_PASSWO="${INFLUX_ADMIN_USER:-""}"
-    influx -execute "SHOW DATABASES" -username "${INFLUX_ADMIN_USER}" -password "${INFLUX_PASSWORD}"
+    influx -execute "SHOW DATABASES" -username "${INFLUX_ADMIN_USER}" -password "${INFLUX_ADMIN_PASSWORD}"
     # -execute "CREATE USER \"${INFLUX_ADMIN_USER}\" WITH PASSWORD '${INFLUX_ADMIN_PASSWORD}' WITH ALL PRIVILEGES"
     if [ $? -eq 0 ]; then
         break
