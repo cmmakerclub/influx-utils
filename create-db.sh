@@ -13,8 +13,6 @@ while true; do
       break;
     fi
 
-    #declare -r INFLUX_ADMIN_USER="${INFLUX_ADMIN_USER:-""}"
-    #declare -r INFLUX_ADMIN_PASSWO="${INFLUX_ADMIN_USER:-""}"
     influx -execute "SHOW DATABASES" -username "${INFLUX_ADMIN_USER}" -password "${INFLUX_ADMIN_PASSWORD}"
     if [ $? -eq 0 ]; then
         unset INFLUX_ACCOUNT
@@ -26,6 +24,9 @@ while true; do
         CREATE_DB="CREATE DATABASE \"${DB}\""
         GRANT_DB="GRANT READ ON \"${DB}\" TO \"${INFLUX_ACCOUNT}\""
     	influx -execute "${CREATE_USER}; ${CREATE_DB}; ${GRANT_DB}" -username "${INFLUX_ADMIN_USER}" -password "${INFLUX_ADMIN_PASSWORD}"
+        influx -execute "SHOW DATABASES" -username "${INFLUX_ADMIN_USER}" -password "${INFLUX_ADMIN_PASSWORD}"
         break;
     fi
+    
+  
 done
