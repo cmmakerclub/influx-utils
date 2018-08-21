@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=1.0.1
+VERSION=1.0.2
 DEFAULT_INFLUX_ADMIN_USER=admin
 DEFAULT_INFLUX_TELEGRAF_USER=telegraf
 
@@ -144,7 +144,7 @@ createdb() {
             CREATE_USER="CREATE USER \"${INFLUX_ACCOUNT}\" WITH PASSWORD '${INFLUX_ACCOUNT}'"
             # CREATE DATABASE foo WITH DURATION 45d NAME autogen
             CREATE_DB="CREATE DATABASE \"${DB}\""
-            GRANT_DB="GRANT ALL ON \"${DB}\" TO \"${INFLUX_ACCOUNT}\""
+            GRANT_DB="GRANT READ ON \"${DB}\" TO \"${INFLUX_ACCOUNT}\""
             influx -execute "${CREATE_USER}; ${CREATE_DB}; ${GRANT_DB}" -username "${INFLUX_ADMIN_USER}" -password "${INFLUX_ADMIN_PASSWORD}"
             influx -execute "SHOW DATABASES" -username "${INFLUX_ADMIN_USER}" -password "${INFLUX_ADMIN_PASSWORD}"
             break;
