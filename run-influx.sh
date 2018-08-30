@@ -157,10 +157,11 @@ createdb() {
 }
 
 run_grafana() {
-  ADMIN_PASSWORD="secret"
+  GRAFANA_PASSWORD="${GRAFANA_PASSWORD:-secret}"
+  read -r -p "Enter GRAFANA_PASSWORD: " GRAFANA_PASSWORD
   NAME="grafana"
   docker volume create grafana-storage 
-  docker run -d -p 3001:3000 -e "GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD}" --name="${NAME}" -v grafana-storage:/var/lib/grafana  grafana/grafana
+  docker run -d -p 3001:3000 -e "GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}" --name="${NAME}" -v grafana-storage:/var/lib/grafana  grafana/grafana
 }
 
 case "$1" in
