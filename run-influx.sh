@@ -102,9 +102,31 @@ EOF
 }
 
 create_user() {
-#          unset INFLUX_ADMIN_USER
+    local dbname=$1
+    echo "enter 'q' to 'exit'"
+    while true; do
+        read -r -p "Enter INFLUX_ADMIN_USER: " INFLUX_ADMIN_USER
+        if [[ $INFLUX_ADMIN_USER = 'q' ]]; then
+          exit;
+        fi
+
+        read -r -p "Enter INFLUX_ADMIN_PASSWORD: " INFLUX_ADMIN_PASSWORD
+        if [[ $INFLUX_ADMIN_PASSWORD = 'q' ]]; then
+          exit;
+        fi
+
+        INFLUX_ACCOUNT="${INFLUX_ACCOUNT:-${dbname}}"
+        influx -execute "SHOW DATABASES" -username "${INFLUX_ADMIN_USER}" -password "${INFLUX_ADMIN_PASSWORD}"
+
+        if [ $? -eq 0 ]; then
+          break;
+        fi
+     done;
+
+    INFLUX_ACCOUNT="${INFLUX_ACCOUNT:-${dbname}}"
+          # unset INFLUX_ADMIN_USER
           while [ -z ${INFLUX_ADMIN_USER} ]; do
-                 read -r -p "Enter admin user: " INFLUX_ADMIN_USER
+                 read -r -p "Enter admin user ($INFLUX_ACCOUNT): " INFLUX_ADMIN_USER
           done
           while [ -z ${INFLUX_ADMIN_PASSWORD} ]; do
                  read -r -p "Enter admin password: " INFLUX_ADMIN_PASSWORD
@@ -170,7 +192,7 @@ run_grafana() {
 case "$1" in
         --setup|setup) setup;;
         --create-db|create-db) createdb $2;;
-        --create-user|create-admin) create_user;;
+        --create-user|create-admin) create_user $2;;
         --run-grafana|run-grafana) run_grafana;;
         --help|help) usage;;
         *) usage;;
