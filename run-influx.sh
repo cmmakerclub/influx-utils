@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=1.0.3
+VERSION=1.0.4
 DEFAULT_INFLUX_ADMIN_USER=admin
 DEFAULT_INFLUX_TELEGRAF_USER=telegraf
 
@@ -121,6 +121,7 @@ create_user() {
 }
 
 createdb() {
+    local dbname=$1
     INFLUX_ADMIN_USER=admin
     INFLUX_ADMIN_PASSWORD=admin
 #    CREATE RETENTION POLICY <retention_policy_name> ON <database_name> DURATION <duration> REPLICATION <n> [SHARD DURATION <duration>] [DEFAULT]
@@ -138,11 +139,13 @@ createdb() {
           break;
         fi
 
+        INFLUX_ACCOUNT="${INFLUX_ACCOUNT:-${dbname}}"
         influx -execute "SHOW DATABASES" -username "${INFLUX_ADMIN_USER}" -password "${INFLUX_ADMIN_PASSWORD}"
+
         if [ $? -eq 0 ]; then
             unset INFLUX_ACCOUNT
             while [ -z ${INFLUX_ACCOUNT} ]; do
-                 read -r -p "Enter INFLUX_ACCOUNT DB NAME : " INFLUX_ACCOUNT
+                 read -r -p "Enter INFLUX_ACCOUNT DB NAME: (${dbname})" INFLUX_ACCOUNT
             done
             DB="${INFLUX_ACCOUNT}db"
             CREATE_USER="CREATE USER \"${INFLUX_ACCOUNT}\" WITH PASSWORD '${INFLUX_ACCOUNT}'"
@@ -166,7 +169,7 @@ run_grafana() {
 
 case "$1" in
         --setup|setup) setup;;
-        --create-db|create-db) createdb;;
+        --create-db|create-db) createdb $2;;
         --create-user|create-admin) create_user;;
         --run-grafana|run-grafana) run_grafana;;
         --help|help) usage;;

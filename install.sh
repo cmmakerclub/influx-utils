@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "installing cmmc-influx-utils v1.0.3"
+echo "installing cmmc-influx-utils v1.0.4"
 
 cd ~
 curl --silent https://raw.githubusercontent.com/cmmakerclub/influx-utils/master/run-influx.sh > cmmc-influx.sh
