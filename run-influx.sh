@@ -7,7 +7,7 @@ DEFAULT_INFLUX_TELEGRAF_USER=telegraf
 usage() {
         cat <<EOF
 $0 v$VERSION
-Usage: $0 [setup|create-db $dbname|run-grafana|--help]
+Usage: $0 [setup|create-db \$dbname|run-grafana|--help]
 EOF
         exit 1
 }
